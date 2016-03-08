@@ -28,3 +28,7 @@ services:
   plugin.manager.ctools.relationship:
     class: Drupal\ctools\Plugin\RelationshipManager
     parent: default_plugin_manager
+  ctools.display_route_enhancer:
+    class: Drupal\ctools\Routing\Enhancer\DisplayRouteEnhancer
+    tags:
+      - { name: route_enhancer, priority: 50 }
