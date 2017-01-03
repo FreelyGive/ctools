@@ -31,3 +31,5 @@ services:
   ctools.context_mapper:
     class: Drupal\ctools\ContextMapper
     arguments: ['@entity.repository']
+  ctools.views.handlers.helper:
+    class: Drupal\ctools\ViewsHandlersHelper

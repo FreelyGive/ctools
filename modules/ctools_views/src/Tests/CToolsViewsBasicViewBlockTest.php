@@ -270,6 +270,83 @@ class CToolsViewsBasicViewBlockTest extends UITestBase {
   }
 
   /**
+   * Test ctools_views 'configure_filters' configuration.
+   */
+  public function testConfigureFilters() {
+    $default_theme = $this->config('system.theme')->get('default');
+
+    // Get the "Configure block" form for our Views block.
+    $this->drupalGet('admin/structure/block/add/views_block:ctools_views_test_view-block_filter/' . $default_theme);
+    $this->assertFieldById('edit-settings-override-filters-job-form-job');
+
+    // Add block to sidebar_first region with default settings.
+    $edit = array();
+    $edit['region'] = 'sidebar_first';
+    $edit['settings[override][filters][status][form][status]'] = "All";
+    $this->drupalPostForm('admin/structure/block/add/views_block:ctools_views_test_view-block_filter/' . $default_theme, $edit, t('Save block'));
+
+    // Assert configure_filters default settings.
+    $this->drupalGet('<front>');
+    // Check that the default settings return all results
+    $this->assertEqual(5, count($this->xpath('//div[contains(@class, "view-display-id-block_filter")]//table/tbody/tr')));
+    $this->assertFieldById('edit-job');
+
+    // Override configure_filters settings.
+    $edit = array();
+    $edit['region'] = 'sidebar_first';
+    $edit['settings[override][filters][status][form][status]'] = "All";
+    $edit['settings[override][filters][job][form][job]'] = "Singer";
+    $this->drupalPostForm('admin/structure/block/manage/views_block__ctools_views_test_view_block_filter', $edit, t('Save block'));
+
+    $block = $this->storage->load('views_block__ctools_views_test_view_block_filter');
+    $config = $block->getPlugin()->getConfiguration();
+    $this->assertEqual("Singer", $config['filter']['job']['value']['job'], "'configure_filters' setting is properly saved.");
+
+    // Assert configure_filters overridden settings.
+    $this->drupalGet('<front>');
+    // Check that the overridden settings return proper results
+    $this->assertEqual(2, count($this->xpath('//div[contains(@class, "view-display-id-block_filter")]//table/tbody/tr')));
+  }
+
+  /**
+   * Test ctools_views 'configure_filters' configuration with boolean values.
+   */
+  public function testConfigureFiltersBoolean() {
+    $default_theme = $this->config('system.theme')->get('default');
+
+    // Get the "Configure block" form for our Views block.
+    $this->drupalGet('admin/structure/block/add/views_block:ctools_views_test_view-block_filter/' . $default_theme);
+    $this->assertFieldByXPath('//select[@name="settings[override][filters][status][form][status]"]');
+
+    // Add block to sidebar_first region with default settings.
+    $edit = array();
+    $edit['region'] = 'sidebar_first';
+    $edit['settings[override][filters][status][form][status]'] = "All";
+    $this->drupalPostForm('admin/structure/block/add/views_block:ctools_views_test_view-block_filter/' . $default_theme, $edit, t('Save block'));
+
+    // Assert configure_filters default settings.
+    $this->drupalGet('<front>');
+    // Check that the default settings return all results
+    $this->assertEqual(5, count($this->xpath('//div[contains(@class, "view-display-id-block_filter")]//table/tbody/tr')));
+    $this->assertFieldByXPath('//select[@name="status"]');
+
+    // Override configure_filters settings.
+    $edit = array();
+    $edit['region'] = 'sidebar_first';
+    $edit['settings[override][filters][status][form][status]'] = 1;
+    $this->drupalPostForm('admin/structure/block/manage/views_block__ctools_views_test_view_block_filter', $edit, t('Save block'));
+
+    $block = $this->storage->load('views_block__ctools_views_test_view_block_filter');
+    $config = $block->getPlugin()->getConfiguration();
+    $this->assertEqual(1, $config['filter']['status']['value']['status'], "'configure_filters' setting is properly saved.");
+
+    // Assert configure_filters overridden settings.
+    $this->drupalGet('<front>');
+    // Check that the overridden settings return proper results
+    $this->assertEqual(3, count($this->xpath('//div[contains(@class, "view-display-id-block_filter")]//table/tbody/tr')));
+  }
+
+  /**
    * Test ctools_views 'disable_filters' configuration.
    */
   public function testDisableFilters() {
@@ -283,6 +360,7 @@ class CToolsViewsBasicViewBlockTest extends UITestBase {
     // Add block to sidebar_first region with default settings.
     $edit = array();
     $edit['region'] = 'sidebar_first';
+    $edit['settings[override][filters][status][form][status]'] = "All";
     $this->drupalPostForm('admin/structure/block/add/views_block:ctools_views_test_view-block_filter/' . $default_theme, $edit, t('Save block'));
 
     // Assert disable_filters default settings.
@@ -296,6 +374,7 @@ class CToolsViewsBasicViewBlockTest extends UITestBase {
     $edit['region'] = 'sidebar_first';
     $edit['settings[override][filters][status][disable]'] = 1;
     $edit['settings[override][filters][job][disable]'] = 1;
+    $edit['settings[override][filters][status][form][status]'] = "All";
     $this->drupalPostForm('admin/structure/block/manage/views_block__ctools_views_test_view_block_filter', $edit, t('Save block'));
 
     $block = $this->storage->load('views_block__ctools_views_test_view_block_filter');
