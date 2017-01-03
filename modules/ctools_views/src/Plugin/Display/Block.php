@@ -603,4 +603,11 @@ class Block extends CoreBlock {
     return ($a_weight < $b_weight) ? -1 : 1;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function usesExposedFormInBlock() {
+    return TRUE;
+  }
+
 }

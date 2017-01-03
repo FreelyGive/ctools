@@ -81,6 +81,10 @@ function ctools_views_config_schema_info_alter(&$definitions) {
   ];
 
   // Add to the views block display plugin schema.
+  $definitions['views.display.block']['mapping']['exposed_block'] = [
+    'type' => 'boolean',
+    'label' => 'Exposed form in block',
+  ];
   $definitions['views.display.block']['mapping']['allow']['mapping']['offset'] = [
     'type' => 'string',
     'label' => 'Pager offset',
