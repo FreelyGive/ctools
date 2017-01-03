@@ -1,6 +1,7 @@
 {
   "name": "drupal/ctools",
   "description": "Temporary Ctools fork.",
+  "version": "8.3.0-alpha28",
   "type": "drupal-module",
   "license": "GPL-2.0+"
 }
